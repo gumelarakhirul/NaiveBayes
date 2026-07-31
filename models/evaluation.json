@@ -144,5 +144,87 @@
     "test_mixed_rows": 32874,
     "split": "grouped by hostname; normalized URL deduplication",
     "seed": 42
+  },
+  "learning_curve": [
+    {
+      "fraction": 0.1,
+      "train_size": 14398,
+      "train_f1": 0.9956137297222029,
+      "validation_f1": 0.9116865869853917
+    },
+    {
+      "fraction": 0.25,
+      "train_size": 35998,
+      "train_f1": 0.9916177002979755,
+      "validation_f1": 0.9255493604460479
+    },
+    {
+      "fraction": 0.5,
+      "train_size": 71998,
+      "train_f1": 0.9897472281346076,
+      "validation_f1": 0.9342537804076265
+    },
+    {
+      "fraction": 0.75,
+      "train_size": 107996,
+      "train_f1": 0.9887315590481133,
+      "validation_f1": 0.9393773894046968
+    },
+    {
+      "fraction": 1.0,
+      "train_size": 143996,
+      "train_f1": 0.9883240374797703,
+      "validation_f1": 0.9408296943231441
+    }
+  ],
+  "ablation": {
+    "Real-only train \u2192 real-only test": {
+      "accuracy": 0.9516855678110921,
+      "precision": 0.9905517125021089,
+      "recall": 0.9120708404536275,
+      "f1": 0.9496926560983501,
+      "roc_auc": 0.9878518070087129,
+      "pr_auc": 0.9906161424406799,
+      "tn": 6381,
+      "fp": 56,
+      "fn": 566,
+      "tp": 5871,
+      "test_size": 12874
+    },
+    "Real+sintetis train \u2192 real-only test": {
+      "accuracy": 0.9480347988193257,
+      "precision": 0.9567627494456763,
+      "recall": 0.9384806586919372,
+      "f1": 0.9475335267822131,
+      "roc_auc": 0.9794310453086136,
+      "pr_auc": 0.9853994382481411,
+      "tn": 6164,
+      "fp": 273,
+      "fn": 396,
+      "tp": 6041,
+      "test_size": 12874
+    },
+    "Real+sintetis train \u2192 mixed test": {
+      "accuracy": 0.9796495710896149,
+      "precision": 0.9832659065833027,
+      "recall": 0.9759080124110239,
+      "f1": 0.9795731428047999,
+      "roc_auc": 0.9968454146468321,
+      "pr_auc": 0.9973252203261276,
+      "tn": 16164,
+      "fp": 273,
+      "fn": 396,
+      "tp": 16041,
+      "test_size": 32874
+    }
+  },
+  "operational_selection": {
+    "operational_scenario": "real+synthetic training -> real-only testing",
+    "algorithm": "MultinomialNB",
+    "primary_metric_source": "real-only test",
+    "reason": "Higher real-phishing recall; false negatives have higher security cost.",
+    "baseline_real_only_f1": 0.949693,
+    "operational_real_test_f1": 0.9475335267822131,
+    "operational_real_test_recall": 0.9384806586919372
   }
 }
