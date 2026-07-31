@@ -1,0 +1,53 @@
+{
+  "selected": "MultinomialNB",
+  "comparison": {
+    "MultinomialNB": {
+      "accuracy": 0.9619763845937588,
+      "precision": 0.960229659711525,
+      "recall": 0.9638740511667135,
+      "f1": 0.9620484040687478,
+      "roc_auc": 0.9861570263120809,
+      "pr_auc": 0.9903201402338933,
+      "tn": 6830,
+      "fp": 284,
+      "fn": 257,
+      "tp": 6857,
+      "test_size": 14228
+    },
+    "ComplementNB": {
+      "accuracy": 0.9619763845937588,
+      "precision": 0.960229659711525,
+      "recall": 0.9638740511667135,
+      "f1": 0.9620484040687478,
+      "roc_auc": 0.9861570263120809,
+      "pr_auc": 0.9903201402338934,
+      "tn": 6830,
+      "fp": 284,
+      "fn": 257,
+      "tp": 6857,
+      "test_size": 14228
+    },
+    "BernoulliNB": {
+      "accuracy": 0.8946443632274389,
+      "precision": 0.9980486074152918,
+      "recall": 0.7908349732921001,
+      "f1": 0.8824405928946749,
+      "roc_auc": 0.982347960429802,
+      "pr_auc": 0.987821195713457,
+      "tn": 7103,
+      "fp": 11,
+      "fn": 1488,
+      "tp": 5626,
+      "test_size": 14228
+    }
+  },
+  "training": {
+    "real_requested_each": 50000,
+    "real_train_rows": 80000,
+    "synthetic_each": 50000,
+    "synthetic_rows": 100000,
+    "test_real_rows": 14228,
+    "split": "grouped by hostname; real-only test",
+    "seed": 42
+  }
+}
