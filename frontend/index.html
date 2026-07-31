@@ -27,12 +27,12 @@
     <section id="dashboard" class="page active">
       <div class="hero">
         <div><p class="eyebrow">URL RISK INTELLIGENCE</p><h1>Deteksi phishing dari domain, Unicode, dan struktur link.</h1><p>Model final dilatih pada data real dan sintetis seimbang. Homograph guard menangkap penyamaran karakter, sedangkan indikator URL memeriksa struktur link yang mencurigakan.</p><button class="primary go-predict">Mulai analisis <span>→</span></button></div>
-        <div class="hero-score"><small>F1 real-only test</small><strong>96,20%</strong><div><span>ROC-AUC</span><b>98,62%</b></div></div>
+        <div class="hero-score"><small>F1 real-only test</small><strong>94,75%</strong><div><span>F1 test gabungan</span><b>97,96%</b></div></div>
       </div>
       <div class="stat-grid">
-        <article><div class="icon cyan">✓</div><div><span>Precision</span><strong>96,02%</strong><small>Peringatan yang tepat</small></div></article>
-        <article><div class="icon violet">⌁</div><div><span>Recall</span><strong>96,39%</strong><small>Phishing ditemukan</small></div></article>
-        <article><div class="icon green">URL</div><div><span>Accuracy</span><strong>96,20%</strong><small>Test real seimbang</small></div></article>
+        <article><div class="icon cyan">✓</div><div><span>Precision</span><strong>95,68%</strong><small>Test nyata</small></div></article>
+        <article><div class="icon violet">⌁</div><div><span>Recall</span><strong>93,85%</strong><small>Test nyata</small></div></article>
+        <article><div class="icon green">URL</div><div><span>Accuracy</span><strong>94,80%</strong><small>Test nyata seimbang</small></div></article>
         <article><div class="icon amber">NB</div><div><span>Model</span><strong>Final</strong><small>Dimuat sekali di server</small></div></article>
       </div>
       <div class="dashboard-grid">
@@ -42,7 +42,7 @@
           <div class="system-notes"><p><i class="ok"></i>Model membaca hostname, path, query, dan pola karakter</p><p><i class="ok"></i>IP, @, subdomain berlebih, HTTP, port, encoding, dan kata sensitif diperiksa</p><p><i class="ok"></i>Cyrillic, Greek, Armenian, Cherokee, fullwidth, dan Latin Extended diperiksa</p></div>
         </article>
         <article class="panel compact">
-          <p class="eyebrow">DATA TEST REAL</p><h2>14.228 URL</h2><div class="donut"><div><strong>50/50</strong><small>Seimbang</small></div></div><div class="legend"><span><i class="legit"></i>7.114 Legitimate</span><span><i class="phish"></i>7.114 Phishing</span></div>
+          <p class="eyebrow">DATA TEST REAL</p><h2>12.874 URL</h2><div class="donut"><div><strong>50/50</strong><small>Seimbang</small></div></div><div class="legend"><span><i class="legit"></i>6.437 Legitimate</span><span><i class="phish"></i>6.437 Phishing</span></div>
         </article>
       </div>
     </section>
