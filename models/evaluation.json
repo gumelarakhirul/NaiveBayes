@@ -472,6 +472,250 @@
       "gap_pr_auc": 0.009372302934805954
     }
   ],
+  "all_model_learning_curve": [
+    {
+      "model": "MultinomialNB",
+      "fraction": 0.1,
+      "train_size": 11164,
+      "train_f1": 0.9848608467047412,
+      "validation_f1": 0.9187287173666289,
+      "gap": 0.0661321293381123
+    },
+    {
+      "model": "ComplementNB",
+      "fraction": 0.1,
+      "train_size": 11164,
+      "train_f1": 0.9848608467047412,
+      "validation_f1": 0.9187287173666289,
+      "gap": 0.0661321293381123
+    },
+    {
+      "model": "BernoulliNB",
+      "fraction": 0.1,
+      "train_size": 11164,
+      "train_f1": 0.9644312708410523,
+      "validation_f1": 0.8685434516523868,
+      "gap": 0.09588781918866551
+    },
+    {
+      "model": "GaussianNB",
+      "fraction": 0.1,
+      "train_size": 11164,
+      "train_f1": 0.7222857142857143,
+      "validation_f1": 0.3610223642172524,
+      "gap": 0.3612633500684619
+    },
+    {
+      "model": "CategoricalNB",
+      "fraction": 0.1,
+      "train_size": 11164,
+      "train_f1": 0.9083411433926898,
+      "validation_f1": 0.9030122476001324,
+      "gap": 0.005328895792557353
+    },
+    {
+      "model": "MultinomialNB",
+      "fraction": 0.25,
+      "train_size": 27910,
+      "train_f1": 0.9826039585981479,
+      "validation_f1": 0.9349338119811532,
+      "gap": 0.047670146616994646
+    },
+    {
+      "model": "ComplementNB",
+      "fraction": 0.25,
+      "train_size": 27910,
+      "train_f1": 0.9826039585981479,
+      "validation_f1": 0.9349338119811532,
+      "gap": 0.047670146616994646
+    },
+    {
+      "model": "BernoulliNB",
+      "fraction": 0.25,
+      "train_size": 27910,
+      "train_f1": 0.9647529743152589,
+      "validation_f1": 0.8779126213592233,
+      "gap": 0.08684035295603554
+    },
+    {
+      "model": "GaussianNB",
+      "fraction": 0.25,
+      "train_size": 27910,
+      "train_f1": 0.7232914285714286,
+      "validation_f1": 0.35898347254309576,
+      "gap": 0.3643079560283328
+    },
+    {
+      "model": "CategoricalNB",
+      "fraction": 0.25,
+      "train_size": 27910,
+      "train_f1": 0.9400757244793942,
+      "validation_f1": 0.9104690761287487,
+      "gap": 0.029606648350645526
+    },
+    {
+      "model": "MultinomialNB",
+      "fraction": 0.5,
+      "train_size": 55822,
+      "train_f1": 0.9796956158512222,
+      "validation_f1": 0.9436321017970756,
+      "gap": 0.03606351405414665
+    },
+    {
+      "model": "ComplementNB",
+      "fraction": 0.5,
+      "train_size": 55822,
+      "train_f1": 0.9796956158512222,
+      "validation_f1": 0.9436321017970756,
+      "gap": 0.03606351405414665
+    },
+    {
+      "model": "BernoulliNB",
+      "fraction": 0.5,
+      "train_size": 55822,
+      "train_f1": 0.9637759074561566,
+      "validation_f1": 0.8833836858006042,
+      "gap": 0.08039222165555238
+    },
+    {
+      "model": "GaussianNB",
+      "fraction": 0.5,
+      "train_size": 55822,
+      "train_f1": 0.7227478403948993,
+      "validation_f1": 0.35927505330490406,
+      "gap": 0.3634727870899952
+    },
+    {
+      "model": "CategoricalNB",
+      "fraction": 0.5,
+      "train_size": 55822,
+      "train_f1": 0.9389182298306319,
+      "validation_f1": 0.9107084019769357,
+      "gap": 0.02820982785369619
+    },
+    {
+      "model": "MultinomialNB",
+      "fraction": 0.75,
+      "train_size": 83734,
+      "train_f1": 0.9790091343536386,
+      "validation_f1": 0.946607341490545,
+      "gap": 0.032401792863093526
+    },
+    {
+      "model": "ComplementNB",
+      "fraction": 0.75,
+      "train_size": 83734,
+      "train_f1": 0.9790091343536386,
+      "validation_f1": 0.946607341490545,
+      "gap": 0.032401792863093526
+    },
+    {
+      "model": "BernoulliNB",
+      "fraction": 0.75,
+      "train_size": 83734,
+      "train_f1": 0.9639843334939521,
+      "validation_f1": 0.8859691417550627,
+      "gap": 0.07801519173888938
+    },
+    {
+      "model": "GaussianNB",
+      "fraction": 0.75,
+      "train_size": 83734,
+      "train_f1": 0.7224567553150957,
+      "validation_f1": 0.3604403409090909,
+      "gap": 0.3620164144060048
+    },
+    {
+      "model": "CategoricalNB",
+      "fraction": 0.75,
+      "train_size": 83734,
+      "train_f1": 0.9009581467490556,
+      "validation_f1": 0.9031901975935533,
+      "gap": -0.002232050844497735
+    },
+    {
+      "model": "MultinomialNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.9785716877744312,
+      "validation_f1": 0.9487008660892738,
+      "gap": 0.02987082168515731
+    },
+    {
+      "model": "ComplementNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.9785716877744312,
+      "validation_f1": 0.9487008660892738,
+      "gap": 0.02987082168515731
+    },
+    {
+      "model": "BernoulliNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.963467779323134,
+      "validation_f1": 0.8843274571359575,
+      "gap": 0.07914032218717648
+    },
+    {
+      "model": "GaussianNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.7216096266471449,
+      "validation_f1": 0.35898347254309576,
+      "gap": 0.36262615410404914
+    },
+    {
+      "model": "CategoricalNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.9392426020431369,
+      "validation_f1": 0.9104690761287487,
+      "gap": 0.0287735259143882
+    }
+  ],
+  "all_model_learning_summary": [
+    {
+      "model": "MultinomialNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.9785716877744312,
+      "validation_f1": 0.9487008660892738,
+      "gap": 0.02987082168515731
+    },
+    {
+      "model": "ComplementNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.9785716877744312,
+      "validation_f1": 0.9487008660892738,
+      "gap": 0.02987082168515731
+    },
+    {
+      "model": "CategoricalNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.9392426020431369,
+      "validation_f1": 0.9104690761287487,
+      "gap": 0.0287735259143882
+    },
+    {
+      "model": "BernoulliNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.963467779323134,
+      "validation_f1": 0.8843274571359575,
+      "gap": 0.07914032218717648
+    },
+    {
+      "model": "GaussianNB",
+      "fraction": 1.0,
+      "train_size": 111646,
+      "train_f1": 0.7216096266471449,
+      "validation_f1": 0.35898347254309576,
+      "gap": 0.36262615410404914
+    }
+  ],
   "learning_gap_summary": [
     {
       "ratio": 0.05,
