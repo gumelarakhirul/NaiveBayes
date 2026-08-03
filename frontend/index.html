@@ -11,6 +11,7 @@
     <a class="brand" href="#dashboard"><span>PG</span><div><b>PunyGuard</b><small>Domain Intelligence</small></div></a>
     <nav id="menu">
       <button class="active" data-page="dashboard">Dashboard</button>
+      <button data-page="research">Penelitian</button>
       <button data-page="predict"><i>⌕</i>Prediksi</button>
       <button data-page="history"><i>◷</i>History</button>
     </nav>
@@ -45,6 +46,74 @@
           <p class="eyebrow">DATA TEST REAL</p><h2>12.874 URL</h2><div class="donut"><div><strong>50/50</strong><small>Seimbang</small></div></div><div class="legend"><span><i class="legit"></i>6.437 Legitimate</span><span><i class="phish"></i>6.437 Phishing</span></div>
         </article>
       </div>
+    </section>
+
+    <section id="research" class="page research-page">
+      <div class="research-hero">
+        <div><p class="eyebrow">DOKUMENTASI PENELITIAN</p><h1>Klasifikasi Domain Berbasis Punycode untuk Identifikasi Serangan Phishing Menggunakan Naive Bayes</h1><p>Studi eksperimen dengan data sintetis dan nyata yang memisahkan native IDN legitimate dari homograph phishing, kemudian mengevaluasi generalisasi pada real-only test bebas hostname leakage.</p></div>
+        <div class="research-badge"><span>MODEL FINAL</span><strong>MultinomialNB</strong><small>TF-IDF karakter 3–5 · threshold 0,48</small></div>
+      </div>
+
+      <div class="research-summary">
+        <article><span>Training final</span><strong>127.646</strong><small>63.823 data per kelas</small></article>
+        <article><span>Real-only test</span><strong>12.874</strong><small>Hostname-disjoint</small></article>
+        <article><span>F1-score</span><strong>95,35%</strong><small>Evaluasi primer</small></article>
+        <article><span>Gap F1</span><strong>2,37 poin</strong><small>Overfitting terkendali</small></article>
+      </div>
+
+      <article class="panel research-block">
+        <div class="section-label">01 · PERMASALAHAN DAN TUJUAN</div>
+        <div class="research-two-col">
+          <div><h2>Mendeteksi phishing tanpa menyalahkan seluruh Unicode</h2><p>Karakter Cyrillic, Greek, Armenian, Cherokee, fullwidth, dan Latin Extended dapat menyerupai huruf Latin. Namun Punycode dan native IDN juga digunakan secara sah. Sistem menggabungkan pola karakter, struktur URL, skrip Unicode, skeleton homograph, dan konteks merek.</p></div>
+          <div class="research-question"><span>Pertanyaan penelitian</span><b>Bisakah Naive Bayes membedakan URL legitimate dan phishing, termasuk variasi Punycode, dengan generalisasi yang baik pada data nyata?</b></div>
+        </div>
+      </article>
+
+      <article class="panel research-block">
+        <div class="section-label">02 · KOMPOSISI DATASET</div><h2>Data nyata, hard examples, dan sintetis terkontrol</h2>
+        <div class="dataset-cards">
+          <div><i class="source-dot blue"></i><span>Tranco + PhishTank</span><strong>80.000</strong><small>Real training utama</small></div>
+          <div><i class="source-dot violet-dot"></i><span>External augmentation</span><strong>7.648</strong><small>Hard phishing + Tranco match</small></div>
+          <div><i class="source-dot cyan-dot"></i><span>Data sintetis</span><strong>39.998</strong><small>Native IDN + homograph</small></div>
+          <div><i class="source-dot green-dot"></i><span>Total training</span><strong>127.646</strong><small>Seimbang 50:50</small></div>
+        </div>
+        <div class="research-note"><b>Audit malicious_phish.csv:</b> dari 651.191 baris ditemukan 10.072 duplikasi mentah, 30 URL malformed, 110 konflik URL, 2.812 konflik hostname, dan 10.542 overlap. Defacement serta malware tidak dipaksa menjadi phishing.</div>
+      </article>
+
+      <article class="panel research-block">
+        <div class="section-label">03 · TAHAPAN PROSES</div><h2>Pipeline penelitian dari data sampai model aplikasi</h2>
+        <div class="process-timeline">
+          <div><span>1</span><section><b>Akuisisi data</b><p>Tranco, PhishTank, malicious_phish, dan dua dataset sintetis.</p></section></div>
+          <div><span>2</span><section><b>Cleaning dan audit</b><p>NFKC, parsing URL, deduplikasi, konflik label, malformed URL, dan overlap sumber.</p></section></div>
+          <div><span>3</span><section><b>Group split</b><p>Train, validation, dan test dipisahkan berdasarkan hostname untuk mencegah leakage.</p></section></div>
+          <div><span>4</span><section><b>Feature engineering</b><p>TF-IDF character n-gram 3–5 dan indikator IP, @, HTTP, Punycode, path sensitif, serta encoding.</p></section></div>
+          <div><span>5</span><section><b>Training dan validasi</b><p>Lima model Naive Bayes dibandingkan; alpha, synthetic ratio, dan threshold dipilih dari validation.</p></section></div>
+          <div><span>6</span><section><b>Evaluasi dan integrasi</b><p>Real-only test, mixed test, learning curve, ablation, Joblib, dan aplikasi localhost.</p></section></div>
+        </div>
+      </article>
+
+      <article class="panel research-block">
+        <div class="section-label">04 · FEATURE DAN PEMODELAN</div>
+        <div class="research-two-col feature-model">
+          <div><h2>Informasi yang dibaca model</h2><ul class="check-list"><li>Hostname, path, dan query URL</li><li>Character TF-IDF n-gram 3–5</li><li>Punycode dan mixed-script Unicode</li><li>IP, simbol @, HTTP, dan subdomain berlebih</li><li>Kata login, verify, secure, account, dan password</li><li>Percent encoding dan panjang URL</li></ul></div>
+          <div><h2>Model yang dibandingkan</h2><div class="model-rank"><div class="winner"><span>1</span><b>MultinomialNB</b><em>F1 real 95,35%</em></div><div><span>2</span><b>ComplementNB</b><em>F1 real 95,29%</em></div><div><span>3</span><b>BernoulliNB</b><em>F1 real 91,82%</em></div><div><span>4</span><b>CategoricalNB</b><em>F1 real 91,35%</em></div><div><span>5</span><b>GaussianNB</b><em>F1 real 44,26%</em></div></div></div>
+        </div>
+      </article>
+
+      <article class="panel research-block">
+        <div class="section-label">05 · EVALUASI MODEL FINAL</div><h2>Hasil real-only test bebas hostname leakage</h2>
+        <div class="evaluation-grid"><div><span>Accuracy</span><strong>95,45%</strong></div><div><span>Precision</span><strong>97,36%</strong></div><div><span>Recall</span><strong>93,43%</strong></div><div><span>F1-score</span><strong>95,35%</strong></div><div><span>ROC-AUC</span><strong>98,39%</strong></div><div><span>PR-AUC</span><strong>98,79%</strong></div></div>
+        <div class="evaluation-bottom">
+          <div class="mini-matrix"><div><b>6.274</b><span>TN</span></div><div class="bad"><b>163</b><span>FP</span></div><div class="bad"><b>423</b><span>FN</span></div><div><b>6.014</b><span>TP</span></div></div>
+          <div class="evaluation-copy"><h3>Interpretasi</h3><p>Model menemukan 93,43% phishing nyata dan sekitar 97 dari 100 peringatannya benar. Masih terdapat 423 phishing yang lolos, sehingga sistem diposisikan sebagai risk screening, bukan satu-satunya bukti keamanan.</p><p><b>Learning curve:</b> F1 training 97,72% dan real-test 95,35%, menghasilkan gap 2,37 poin.</p></div>
+        </div>
+      </article>
+
+      <article class="panel research-block">
+        <div class="section-label">06 · INTEGRASI MODEL</div><h2>Dari notebook menjadi prediksi localhost</h2>
+        <div class="integration-flow"><div><span>01</span><b>Notebook</b><small>Training dan evaluasi</small></div><i>→</i><div><span>02</span><b>Joblib bundle</b><small>Model + vectorizer + threshold</small></div><i>→</i><div><span>03</span><b>server.py</b><small>API inferensi lokal</small></div><i>→</i><div><span>04</span><b>Frontend</b><small>Dashboard, prediksi, history</small></div></div>
+        <div class="research-conclusion"><b>Kesimpulan penelitian</b><p>MultinomialNB dipilih karena paling sesuai untuk TF-IDF karakter, memiliki keseimbangan precision–recall terbaik, ringan, dan dapat digunakan kembali tanpa training ulang. External challenge menunjukkan perlunya data IDN nyata bertimestamp dan evaluasi lintas waktu.</p></div>
+      </article>
     </section>
 
     <section id="predict" class="page">
