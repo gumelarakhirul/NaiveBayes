@@ -1,118 +1,99 @@
-const pages = [...document.querySelectorAll(".page")];
-const menuButtons = [...document.querySelectorAll("#menu button[data-page]")];
-const historyKey = "punyguard-history-v2";
-
-function showPage(name) {
-  pages.forEach(page => page.classList.toggle("active", page.id === name));
-  menuButtons.forEach(button => button.classList.toggle("active", button.dataset.page === name));
-  document.querySelector("#page-name").textContent =
-    menuButtons.find(button => button.dataset.page === name)?.textContent.trim() || "Dashboard";
-  document.querySelector(".sidebar").classList.remove("open");
-  if (name === "history") renderHistory();
-}
-
-menuButtons.forEach(button => button.addEventListener("click", () => showPage(button.dataset.page)));
-document.querySelectorAll(".go-predict").forEach(button => button.addEventListener("click", () => showPage("predict")));
-document.querySelector("#mobile-menu").addEventListener("click", () => document.querySelector(".sidebar").classList.toggle("open"));
+const form = document.querySelector("#predict-form");
+const input = document.querySelector("#url-input");
+const submit = document.querySelector("#submit-button");
+const errorBox = document.querySelector("#form-error");
+const loading = document.querySelector("#loading-status");
+const resultBox = document.querySelector("#result");
+const emptyBox = document.querySelector("#result-empty");
 
 async function healthCheck() {
   try {
     const response = await fetch("/api/health");
     if (!response.ok) throw new Error();
     document.querySelector("#status-dot").classList.add("ready");
-    document.querySelector("#server-label").textContent = "Model siap";
+    document.querySelector("#server-label").textContent = "Siap menganalisis";
   } catch {
-    document.querySelector("#server-label").textContent = "Server tidak tersedia";
+    document.querySelector("#server-label").textContent = "Layanan belum terhubung";
   }
 }
 
-function historyEntries() {
-  try { return JSON.parse(localStorage.getItem(historyKey) || "[]"); }
-  catch { return []; }
-}
-
-function saveHistory(result) {
-  const entries = historyEntries();
-  entries.unshift({...result, timestamp: new Date().toISOString()});
-  localStorage.setItem(historyKey, JSON.stringify(entries.slice(0, 100)));
-}
-
-function renderHistory() {
-  const entries = historyEntries();
-  const list = document.querySelector("#history-list");
-  document.querySelector("#history-empty").classList.toggle("hidden", entries.length > 0);
-  list.innerHTML = entries.map(entry => `
-    <div class="history-row">
-      <b>${escapeHtml(entry.hostname)}</b>
-      <span class="tag ${entry.prediction}">${entry.prediction === "phishing" ? "Phishing" : "Legitimate"}</span>
-      <span>${(entry.probability * 100).toFixed(2)}%</span>
-      <span>${escapeHtml(entry.model)}</span>
-      <span>${new Date(entry.timestamp).toLocaleString("id-ID")}</span>
-    </div>`).join("");
-}
-
-function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, character => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-  })[character]);
-}
-
-document.querySelector("#clear-history").addEventListener("click", () => {
-  localStorage.removeItem(historyKey);
-  renderHistory();
+document.querySelectorAll("[data-example]").forEach(button => {
+  button.addEventListener("click", () => {
+    input.value = button.dataset.example;
+    input.focus();
+  });
 });
 
-document.querySelectorAll("[data-example]").forEach(button => button.addEventListener("click", () => {
-  document.querySelector("#url-input").value = button.dataset.example;
-}));
-
-document.querySelector("#predict-form").addEventListener("submit", async event => {
+form.addEventListener("submit", async event => {
   event.preventDefault();
-  const submit = event.submitter;
+  if (submit.disabled) return;
+  const url = input.value.trim();
+  if (!url) {
+    errorBox.textContent = "Masukkan URL atau domain terlebih dahulu.";
+    errorBox.classList.remove("hidden");
+    input.focus();
+    return;
+  }
   submit.disabled = true;
-  submit.textContent = "Menganalisis…";
+  submit.textContent = "Menganalisis...";
+  form.setAttribute("aria-busy", "true");
+  errorBox.classList.add("hidden");
+  resultBox.classList.add("hidden");
+  emptyBox.classList.add("hidden");
+  loading.classList.remove("hidden");
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
   try {
     const response = await fetch("/api/predict", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({url: document.querySelector("#url-input").value})
+      body: JSON.stringify({url}),
+      signal: controller.signal
     });
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error || "Prediksi gagal.");
+    if (!response.ok) throw new Error(result.error || "Analisis gagal. Silakan coba kembali.");
     showResult(result);
-    saveHistory(result);
   } catch (error) {
-    alert(error.message);
+    errorBox.textContent = error.name === "AbortError"
+      ? "Analisis terlalu lama. Silakan coba kembali."
+      : error instanceof TypeError ? "Tidak dapat menghubungi layanan. Pastikan server berjalan, lalu coba kembali." : error.message;
+    errorBox.classList.remove("hidden");
+    emptyBox.classList.remove("hidden");
   } finally {
+    clearTimeout(timeout);
     submit.disabled = false;
-    submit.textContent = "Analisis";
+    submit.textContent = "Analisis tautan \u2197";
+    form.removeAttribute("aria-busy");
+    loading.classList.add("hidden");
   }
 });
 
+const indicatorLabels = {
+  host_ip: "Alamat IP sebagai host", at_symbol: "Simbol @ pada alamat",
+  many_subdomains: "Subdomain berlapis", long_url: "URL panjang",
+  punycode: "Domain Punycode", plain_http: "Menggunakan HTTP",
+  suspicious_path: "Kata sensitif pada jalur URL", percent_encoding: "Karakter tersandi pada URL",
+  unusual_port: "Port tidak umum", invalid_port: "Port tidak valid"
+};
+
 function showResult(result) {
-  document.querySelector("#result-empty").classList.add("hidden");
-  const container = document.querySelector("#result");
-  container.classList.remove("hidden");
-  container.classList.toggle("risky", result.prediction === "phishing");
-  document.querySelector("#prediction").textContent =
-    result.prediction === "phishing" ? "Terindikasi phishing" : "Cenderung legitimate";
-  document.querySelector("#probability").textContent = `${(result.probability * 100).toFixed(2)}%`;
-  document.querySelector("#risk-fill").style.width = `${result.probability * 100}%`;
-  document.querySelector("#hostname").textContent = result.hostname;
-  document.querySelector("#decoded").textContent = result.decoded_domain;
-  document.querySelector("#active-model").textContent = result.model;
-  document.querySelector("#homograph").textContent = result.homograph ? "Terdeteksi" : "Tidak terdeteksi";
-  document.querySelector("#unicode-scripts").textContent =
-    result.scripts?.length ? result.scripts.join(", ") : "ASCII / tidak teridentifikasi";
-  document.querySelector("#url-indicators").textContent =
-    result.url_indicators?.length
-      ? result.url_indicators.map(value => value.replaceAll("__", "").replaceAll("_", " ")).join(", ")
-      : "Tidak ada indikator struktural";
-  document.querySelector("#interpretation").textContent = result.interpretation;
-  const alertBox = document.querySelector("#homograph-alert");
-  alertBox.classList.toggle("hidden", !result.homograph);
-  document.querySelector("#homograph-reason").textContent = result.homograph_reasons.join(" · ");
+  resultBox.classList.remove("hidden");
+  resultBox.classList.toggle("risky", result.prediction === "phishing");
+  document.querySelector("#prediction").textContent = result.prediction === "phishing" ? "Terindikasi phishing" : "Cenderung legitimate";
+  document.querySelector("#probability").textContent = `${(result.probability * 100).toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2})}%`;
+  document.querySelector("#risk-fill").style.width = `${Math.max(0, Math.min(100, result.probability * 100))}%`;
+  for (const [id, value] of Object.entries({
+    hostname: result.hostname, decoded: result.decoded_domain,
+    "active-model": result.model, homograph: result.homograph ? "Terdeteksi" : "Tidak terdeteksi",
+    "unicode-scripts": result.scripts?.length ? result.scripts.join(", ") : "Tidak teridentifikasi",
+    "url-indicators": result.url_indicators?.length ? result.url_indicators.map(value => {
+      const key = value.replaceAll("__", "");
+      return indicatorLabels[key] || key.replaceAll("_", " ");
+    }).join(", ") : "Tidak ada indikator struktural",
+    interpretation: result.interpretation,
+    "homograph-reason": (result.homograph_reasons || []).join(" \u00b7 ")
+  })) document.getElementById(id).textContent = value;
+  document.querySelector("#homograph-alert").classList.toggle("hidden", !result.homograph);
 }
 
 healthCheck();
-renderHistory();

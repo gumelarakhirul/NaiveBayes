@@ -2,186 +2,54 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>PunyGuard — Domain Intelligence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PunySos membantu menganalisis URL, domain, dan penyamaran karakter untuk mendeteksi indikasi phishing.">
+  <title>PunySos &mdash; Analisis Phishing</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
-  <aside class="sidebar">
-    <a class="brand" href="#dashboard"><span>PG</span><div><b>PunyGuard</b><small>Domain Intelligence</small></div></a>
-    <nav id="menu">
-      <button class="active" data-page="dashboard">Dashboard</button>
-      <button data-page="research">Penelitian</button>
-      <button data-page="predict"><i>⌕</i>Prediksi</button>
-      <button data-page="history"><i>◷</i>History</button>
-    </nav>
-    <div class="server-status"><span id="status-dot"></span><div><b id="server-label">Menghubungkan…</b><small>Local inference server</small></div></div>
-  </aside>
-
-  <main>
-    <header class="topbar">
-      <button id="mobile-menu" aria-label="Buka menu">☰</button>
-      <div><b id="page-name">Dashboard</b></div>
-      <div class="model-pill"><span></span>MultinomialNB Final · τ 0,48</div>
-    </header>
-
-    <section id="dashboard" class="page active">
-      <div class="hero">
-        <div><p class="eyebrow">URL RISK INTELLIGENCE</p><h1>Deteksi phishing dari domain, Unicode, dan struktur link.</h1><p>Model final dilatih pada data real dan sintetis seimbang. Homograph guard menangkap penyamaran karakter, sedangkan indikator URL memeriksa struktur link yang mencurigakan.</p><button class="primary go-predict">Mulai analisis <span>→</span></button></div>
-        <div class="hero-score"><small>F1 real-only test</small><strong>95,35%</strong><div><span>F1 test gabungan</span><b>98,20%</b></div></div>
-      </div>
-      <div class="stat-grid">
-        <article><div class="icon cyan">✓</div><div><span>Precision</span><strong>97,36%</strong><small>Test nyata</small></div></article>
-        <article><div class="icon violet">⌁</div><div><span>Recall</span><strong>93,43%</strong><small>Test nyata</small></div></article>
-        <article><div class="icon green">URL</div><div><span>Accuracy</span><strong>95,45%</strong><small>Test nyata seimbang</small></div></article>
-        <article><div class="icon amber">NB</div><div><span>Model</span><strong>Final</strong><small>Dimuat sekali di server</small></div></article>
-      </div>
-      <div class="dashboard-grid">
-        <article class="panel">
-          <div class="panel-head"><div><p class="eyebrow">RINGKASAN SISTEM</p><h2>Alur keputusan</h2></div></div>
-          <div class="flow"><span>URL</span><b>→</b><span>Unicode + indikator</span><b>→</b><span>Naive Bayes</span><b>→</b><span>Guard</span><b>→</b><span>Risiko</span></div>
-          <div class="system-notes"><p><i class="ok"></i>Model membaca hostname, path, query, dan pola karakter</p><p><i class="ok"></i>IP, @, subdomain berlebih, HTTP, port, encoding, dan kata sensitif diperiksa</p><p><i class="ok"></i>Cyrillic, Greek, Armenian, Cherokee, fullwidth, dan Latin Extended diperiksa</p></div>
-        </article>
-        <article class="panel compact">
-          <p class="eyebrow">DATA TEST REAL</p><h2>12.874 URL</h2><div class="donut"><div><strong>50/50</strong><small>Seimbang</small></div></div><div class="legend"><span><i class="legit"></i>6.437 Legitimate</span><span><i class="phish"></i>6.437 Phishing</span></div>
-        </article>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="PunySos, halaman prediksi"><span class="brand-mark" aria-hidden="true">P</span><strong>PunySos</strong></a>
+    <div class="server-status" role="status"><span id="status-dot"></span><span id="server-label">Menghubungkan...</span></div>
+  </header>
+  <main id="predict">
+    <section class="hero" aria-labelledby="page-title">
+      <span class="eyebrow">KENALI TAUTANNYA, PAHAMI RISIKONYA</span>
+      <h1 id="page-title">PunySos<span>Periksa tautan sebelum melangkah.</span></h1>
+      <p>Analisis cerdas untuk mendeteksi ancaman phishing secara instan. Kenali pola URL mencurigakan dan penyamaran karakter dalam satu pemeriksaan.</p>
+      <div class="features"><span>Analisis URL &amp; domain</span><span>Deteksi penyamaran karakter</span><span>Pemeriksaan lokal</span></div>
+    </section>
+    <section class="panel" aria-labelledby="form-title">
+      <div class="panel-heading"><div><p class="eyebrow">MULAI PEMERIKSAAN</p><h2 id="form-title">Analisis tautan Anda</h2></div><span class="step">01 / ANALISIS</span></div>
+      <form id="predict-form">
+        <label for="url-input">URL atau domain</label>
+        <div class="search"><input id="url-input" name="url" type="text" inputmode="url" placeholder="https://contoh-domain.com/login" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="input-help" required><button class="primary" id="submit-button" type="submit">Analisis tautan</span></button></div>
+        <p id="input-help" class="input-help">Tempel tautan lengkap atau nama domain yang ingin diperiksa.</p>
+        <div class="examples"><span>Coba contoh:</span><button type="button" data-example="google.com">google.com</button><button type="button" data-example="xn--pple-43d.com">Domain penyamaran</button></div>
+      </form>
+      <p id="form-error" class="error hidden" role="alert"></p>
+      <p id="loading-status" class="loading hidden" role="status">Sedang memeriksa pola URL dan karakter domain...</p>
+      <div id="result-empty" class="empty"></span><p>Mulai analisis untuk melihat indikasi phishing<br>dan detail domain di sini.</p></div>
+      <div id="result" class="result hidden" aria-live="polite" aria-atomic="true">
+        <div class="verdict"><div><p class="eyebrow">HASIL ANALISIS</p><h2 id="prediction"></h2></div><div class="risk-score"><strong id="probability"></strong><span>Skor phishing sistem</span></div></div>
+        <div class="riskbar" aria-hidden="true"><div id="risk-fill"></div></div>
+        <div class="interpretation"><b>Ringkasan pemeriksaan</b><p id="interpretation"></p></div>
+        <div id="homograph-alert" class="alert hidden"><b>Penyamaran karakter terdeteksi</b><p id="homograph-reason"></p></div>
+        <dl class="detail-grid">
+          <div><dt>Nama host</dt><dd id="hostname"></dd></div><div><dt>Domain dalam bentuk Unicode</dt><dd id="decoded"></dd></div>
+          <div><dt>Penyamaran karakter (homograph)</dt><dd id="homograph"></dd></div><div><dt>Skrip Unicode</dt><dd id="unicode-scripts"></dd></div>
+          <div><dt>Indikator tautan</dt><dd id="url-indicators"></dd></div><div><dt>Model analisis</dt><dd id="active-model"></dd></div>
+        </dl>
       </div>
     </section>
-
-    <section id="research" class="page research-page">
-      <div class="research-hero">
-        <div><p class="eyebrow">DOKUMENTASI PENELITIAN</p><h1>Klasifikasi Domain Berbasis Punycode untuk Identifikasi Serangan Phishing Menggunakan Naive Bayes</h1><p>Studi eksperimen dengan data sintetis dan nyata yang memisahkan native IDN legitimate dari homograph phishing, kemudian mengevaluasi generalisasi pada real-only test bebas hostname leakage.</p></div>
-        <div class="research-badge"><span>MODEL FINAL</span><strong>MultinomialNB</strong><small>TF-IDF karakter 3–5 · threshold 0,48</small></div>
-      </div>
-
-      <div class="research-summary">
-        <article><span>Training final</span><strong>127.646</strong><small>63.823 data per kelas</small></article>
-        <article><span>Real-only test</span><strong>12.874</strong><small>Hostname-disjoint</small></article>
-        <article><span>F1-score</span><strong>95,35%</strong><small>Evaluasi primer</small></article>
-        <article><span>Gap F1</span><strong>2,37 poin</strong><small>Overfitting terkendali</small></article>
-      </div>
-
-      <article class="panel research-block">
-        <div class="section-label">01 · PERMASALAHAN DAN TUJUAN</div>
-        <div class="research-two-col">
-          <div><h2>Mendeteksi phishing tanpa menyalahkan seluruh Unicode</h2><p>Karakter Cyrillic, Greek, Armenian, Cherokee, fullwidth, dan Latin Extended dapat menyerupai huruf Latin. Namun Punycode dan native IDN juga digunakan secara sah. Sistem menggabungkan pola karakter, struktur URL, skrip Unicode, skeleton homograph, dan konteks merek.</p></div>
-          <div class="research-question"><span>Pertanyaan penelitian</span><b>Bisakah Naive Bayes membedakan URL legitimate dan phishing, termasuk variasi Punycode, dengan generalisasi yang baik pada data nyata?</b></div>
-        </div>
-      </article>
-
-      <article class="panel research-block">
-        <div class="section-label">02 · KOMPOSISI DATASET</div><h2>Data nyata, hard examples, dan sintetis terkontrol</h2>
-        <div class="dataset-cards">
-          <div><i class="source-dot blue"></i><span>Tranco + PhishTank</span><strong>80.000</strong><small>Real training utama</small></div>
-          <div><i class="source-dot violet-dot"></i><span>External augmentation</span><strong>7.648</strong><small>Hard phishing + Tranco match</small></div>
-          <div><i class="source-dot cyan-dot"></i><span>Data sintetis</span><strong>39.998</strong><small>Native IDN + homograph</small></div>
-          <div><i class="source-dot green-dot"></i><span>Total training</span><strong>127.646</strong><small>Seimbang 50:50</small></div>
-        </div>
-        <div class="research-note"><b>Audit malicious_phish.csv:</b> dari 651.191 baris ditemukan 10.072 duplikasi mentah, 30 URL malformed, 110 konflik URL, 2.812 konflik hostname, dan 10.542 overlap. Defacement serta malware tidak dipaksa menjadi phishing.</div>
-      </article>
-
-      <article class="panel research-block">
-        <div class="section-label">03 · TAHAPAN PROSES</div><h2>Pipeline penelitian dari data sampai model aplikasi</h2>
-        <div class="process-timeline">
-          <div><span>1</span><section><b>Akuisisi data</b><p>Tranco, PhishTank, malicious_phish, dan dua dataset sintetis.</p></section></div>
-          <div><span>2</span><section><b>Cleaning dan audit</b><p>NFKC, parsing URL, deduplikasi, konflik label, malformed URL, dan overlap sumber.</p></section></div>
-          <div><span>3</span><section><b>Group split</b><p>Train, validation, dan test dipisahkan berdasarkan hostname untuk mencegah leakage.</p></section></div>
-          <div><span>4</span><section><b>Feature engineering</b><p>TF-IDF character n-gram 3–5 dan indikator IP, @, HTTP, Punycode, path sensitif, serta encoding.</p></section></div>
-          <div><span>5</span><section><b>Training dan validasi</b><p>Lima model Naive Bayes dibandingkan; alpha, synthetic ratio, dan threshold dipilih dari validation.</p></section></div>
-          <div><span>6</span><section><b>Evaluasi dan integrasi</b><p>Real-only test, mixed test, learning curve, ablation, Joblib, dan aplikasi localhost.</p></section></div>
-        </div>
-      </article>
-
-      <article class="panel research-block">
-        <div class="section-label">04 · FEATURE DAN PEMODELAN</div>
-        <div class="research-two-col feature-model">
-          <div><h2>Informasi yang dibaca model</h2><ul class="check-list"><li>Hostname, path, dan query URL</li><li>Character TF-IDF n-gram 3–5</li><li>Punycode dan mixed-script Unicode</li><li>IP, simbol @, HTTP, dan subdomain berlebih</li><li>Kata login, verify, secure, account, dan password</li><li>Percent encoding dan panjang URL</li></ul></div>
-          <div><h2>Model yang dibandingkan</h2><div class="model-rank"><div class="winner"><span>1</span><b>MultinomialNB</b><em>F1 real 95,35%</em></div><div><span>2</span><b>ComplementNB</b><em>F1 real 95,29%</em></div><div><span>3</span><b>BernoulliNB</b><em>F1 real 91,82%</em></div><div><span>4</span><b>CategoricalNB</b><em>F1 real 91,35%</em></div><div><span>5</span><b>GaussianNB</b><em>F1 real 44,26%</em></div></div></div>
-        </div>
-      </article>
-
-      <article class="panel research-block">
-        <div class="section-label">05 · EVALUASI MODEL FINAL</div><h2>Hasil real-only test bebas hostname leakage</h2>
-        <div class="evaluation-grid"><div><span>Accuracy</span><strong>95,45%</strong></div><div><span>Precision</span><strong>97,36%</strong></div><div><span>Recall</span><strong>93,43%</strong></div><div><span>F1-score</span><strong>95,35%</strong></div><div><span>ROC-AUC</span><strong>98,39%</strong></div><div><span>PR-AUC</span><strong>98,79%</strong></div></div>
-        <div class="evaluation-bottom">
-          <div class="mini-matrix"><div><b>6.274</b><span>TN</span></div><div class="bad"><b>163</b><span>FP</span></div><div class="bad"><b>423</b><span>FN</span></div><div><b>6.014</b><span>TP</span></div></div>
-          <div class="evaluation-copy"><h3>Interpretasi</h3><p>Model menemukan 93,43% phishing nyata dan sekitar 97 dari 100 peringatannya benar. Masih terdapat 423 phishing yang lolos, sehingga sistem diposisikan sebagai risk screening, bukan satu-satunya bukti keamanan.</p><p><b>Learning curve:</b> F1 training 97,72% dan real-test 95,35%, menghasilkan gap 2,37 poin.</p></div>
-        </div>
-      </article>
-
-      <article class="panel research-block">
-        <div class="section-label">06 · INTEGRASI MODEL</div><h2>Dari notebook menjadi prediksi localhost</h2>
-        <div class="integration-flow"><div><span>01</span><b>Notebook</b><small>Training dan evaluasi</small></div><i>→</i><div><span>02</span><b>Joblib bundle</b><small>Model + vectorizer + threshold</small></div><i>→</i><div><span>03</span><b>server.py</b><small>API inferensi lokal</small></div><i>→</i><div><span>04</span><b>Frontend</b><small>Dashboard, prediksi, history</small></div></div>
-        <div class="research-conclusion"><b>Kesimpulan penelitian</b><p>MultinomialNB dipilih karena paling sesuai untuk TF-IDF karakter, memiliki keseimbangan precision–recall terbaik, ringan, dan dapat digunakan kembali tanpa training ulang. External challenge menunjukkan perlunya data IDN nyata bertimestamp dan evaluasi lintas waktu.</p></div>
-      </article>
+    <section class="guide" aria-label="Panduan pemeriksaan">
+      <article><span class="guide-number">01</span><h3>Masukkan tautan</h3><p>Salin URL yang ingin Anda periksa ke kolom analisis.</p></article>
+      <article><span class="guide-number">02</span><h3>Kenali indikasinya</h3><p>Lihat hasil klasifikasi, pola mencurigakan, dan penyamaran karakter.</p></article>
+      <article><span class="guide-number">03</span><h3>Verifikasi sebelum percaya</h3><p>Pastikan alamat situs sesuai sebelum memasukkan informasi pribadi.</p></article>
     </section>
-
-    <section id="predict" class="page">
-      <div class="page-title"><div><p class="eyebrow">PREDIKSI INTERAKTIF</p><h1>Analisis URL atau domain</h1><p>Inferensi berjalan di localhost; URL tidak dikirim ke layanan eksternal.</p></div></div>
-      <div class="predict-layout">
-        <article class="panel input-panel">
-          <form id="predict-form">
-            <label for="url-input">URL / Domain</label>
-            <div class="search"><input id="url-input" placeholder="https://contoh-domain.com/login" autocomplete="url" required><button class="primary" type="submit">Analisis</button></div>
-            <div class="examples"><span>Coba:</span><button type="button" data-example="google.com">google.com</button><button type="button" data-example="xn--pple-43d.com">homograph apple</button></div>
-          </form>
-          <div id="result-empty" class="empty"><div>⌕</div><h3>Hasil analisis akan tampil di sini</h3><p>Masukkan URL atau domain untuk memulai.</p></div>
-          <div id="result" class="result hidden" aria-live="polite">
-            <div class="verdict"><div><span>HASIL KLASIFIKASI</span><h2 id="prediction"></h2></div><div class="risk-score"><strong id="probability"></strong><small>Risiko phishing</small></div></div>
-            <div class="riskbar"><div id="risk-fill"></div></div>
-            <div class="detail-grid">
-              <div><span>Hostname</span><b id="hostname"></b></div><div><span>Decoded IDN</span><b id="decoded"></b></div>
-              <div><span>Model aktif</span><b id="active-model"></b></div><div><span>Homograph</span><b id="homograph"></b></div>
-              <div><span>Skrip Unicode</span><b id="unicode-scripts"></b></div>
-              <div><span>Indikator link</span><b id="url-indicators"></b></div>
-            </div>
-            <div id="homograph-alert" class="alert hidden"><b>Homograph guard aktif</b><p id="homograph-reason"></p></div>
-            <div class="interpretation"><b>Interpretasi</b><p id="interpretation"></p></div>
-          </div>
-        </article>
-        <aside class="panel safety"><div class="shield">◇</div><h3>Cara membaca hasil</h3><p>Probabilitas adalah kedekatan pola hostname dengan data training, bukan bukti forensik.</p><ul><li><b>0–49%</b> cenderung legitimate</li><li><b>50–79%</b> perlu verifikasi</li><li><b>80–100%</b> risiko tinggi</li></ul><hr><small>Gunakan bersama DNS, reputasi, sertifikat, dan pemeriksaan konten.</small></aside>
-      </div>
-    </section>
-
-    <section id="history" class="page">
-      <div class="page-title row"><div><p class="eyebrow">RIWAYAT LOKAL</p><h1>History prediksi</h1><p>Disimpan hanya di browser perangkat ini.</p></div><button id="clear-history" class="secondary">Hapus semua</button></div>
-      <article class="panel"><div class="history-table"><div class="history-header"><span>Domain</span><span>Hasil</span><span>Probabilitas</span><span>Model</span><span>Waktu</span></div><div id="history-list"></div></div><div id="history-empty" class="empty small"><h3>Belum ada riwayat</h3><p>Prediksi pertama Anda akan muncul di sini.</p></div></article>
-    </section>
-
-    <section id="performance" class="page">
-      <div class="page-title"><p class="eyebrow">KINERJA MODEL FINAL</p><h1>Evaluasi two-stage</h1><p>Domain biasa diuji temporal; Punycode diuji pada held-out nyata.</p></div>
-      <div class="stat-grid"><article><span>Accuracy</span><strong>87,37%</strong></article><article><span>Precision</span><strong>92,75%</strong></article><article><span>Recall</span><strong>81,07%</strong></article><article><span>F1</span><strong>86,52%</strong></article><article><span>ROC-AUC</span><strong>93,86%</strong></article><article><span>PR-AUC</span><strong>95,22%</strong></article></div>
-      <div class="dashboard-grid">
-        <article class="panel"><div class="panel-head"><div><p class="eyebrow">CONFUSION MATRIX</p><h2>Two-stage</h2></div></div><div class="matrix"><div class="correct"><strong>4.657</strong><span>TN</span><small>Legitimate benar</small></div><div class="wrong"><strong>315</strong><span>FP</span><small>Legitimate ditandai phishing</small></div><div class="wrong"><strong>941</strong><span>FN</span><small>Phishing lolos</small></div><div class="correct"><strong>4.031</strong><span>TP</span><small>Phishing ditemukan</small></div></div></article>
-        <article class="panel"><p class="eyebrow">MODEL PUNYCODE KHUSUS</p><h2>Held-out nyata</h2><div class="metric-list"><div><span>Accuracy</span><b>89,29%</b></div><div><span>Precision</span><b>92,31%</b></div><div><span>Recall</span><b>85,71%</b></div><div><span>F1</span><b>88,89%</b></div><div><span>Test size</span><b>28 domain</b></div></div><p class="note">Ukuran test Punycode masih kecil; hasil harus dibaca sebagai bukti awal.</p></article>
-      </div>
-    </section>
-
-    <section id="comparison" class="page">
-      <div class="page-title"><p class="eyebrow">PERBANDINGAN EKSPERIMEN</p><h1>Seluruh metrik, bukan hanya F1</h1><p>Angka berikut berasal dari test seimbang pada eksperimen model utama.</p></div>
-      <article class="panel table-wrap"><table><thead><tr><th>Model</th><th>Rezim</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC-AUC</th><th>PR-AUC</th></tr></thead><tbody>
-        <tr class="winner"><td><b>MultinomialNB</b><small>Model final utama</small></td><td>Nyata</td><td>86,88%</td><td>91,51%</td><td>81,29%</td><td>86,10%</td><td>93,43%</td><td>94,70%</td></tr>
-        <tr><td>ComplementNB</td><td>Nyata</td><td>86,88%</td><td>91,51%</td><td>81,29%</td><td>86,10%</td><td>93,43%</td><td>94,70%</td></tr>
-        <tr><td>MultinomialNB</td><td>+ Sintetis</td><td>87,04%</td><td>92,41%</td><td>80,72%</td><td>86,17%</td><td>93,48%</td><td>94,84%</td></tr>
-        <tr><td>BernoulliNB</td><td>Nyata</td><td>85,69%</td><td>97,09%</td><td>73,59%</td><td>83,72%</td><td>94,61%</td><td>95,21%</td></tr>
-        <tr><td>CategoricalNB</td><td>Nyata</td><td>84,96%</td><td>90,74%</td><td>77,85%</td><td>83,80%</td><td>92,69%</td><td>93,75%</td></tr>
-        <tr><td>GaussianNB</td><td>Nyata</td><td>83,47%</td><td>91,99%</td><td>73,33%</td><td>81,61%</td><td>91,84%</td><td>91,04%</td></tr>
-      </tbody></table></article>
-      <div class="insight"><b>Kesimpulan eksperimen</b><p>Data sintetis hanya menaikkan F1 MultinomialNB sebesar 0,07 poin persentase dan validation-nya lebih rendah. Karena itu model utama tetap dilatih pada data nyata. BernoulliNB memiliki precision tertinggi, tetapi kehilangan terlalu banyak phishing karena recall lebih rendah.</p></div>
-    </section>
-
-    <section id="business" class="page">
-      <div class="page-title"><p class="eyebrow">JAWABAN BISNIS</p><h1>Keputusan yang dapat diambil</h1><p>Menerjemahkan metrik teknis menjadi dampak operasional.</p></div>
-      <div class="business-grid">
-        <article><span>01</span><h2>Apakah phishing dapat ditemukan?</h2><strong>4.031 dari 4.972</strong><p>Model two-stage menemukan 81,07% phishing pada test. Sebanyak 941 masih lolos dan memerlukan lapisan keamanan tambahan.</p></article>
-        <article><span>02</span><h2>Apakah peringatannya dapat dipercaya?</h2><strong>92,75% precision</strong><p>Sekitar 93 dari 100 peringatan memang phishing. Terdapat 315 false positive dari 4.972 domain legitimate.</p></article>
-        <article><span>03</span><h2>Apakah Punycode otomatis phishing?</h2><strong>Tidak.</strong><p>Punycode dirutekan ke model khusus. Homograph guard hanya aktif jika ada mixed-script atau karakter yang menyamar sebagai merek.</p></article>
-        <article><span>04</span><h2>Apakah sintetis diperlukan?</h2><strong>Dampaknya kecil.</strong><p>F1 test naik 0,07 poin, tetapi validation turun. Data nyata tetap dipilih untuk model utama.</p></article>
-        <article><span>05</span><h2>Bagaimana digunakan?</h2><strong>Sebagai risk screening.</strong><p>Risiko tinggi dapat masuk antrean verifikasi atau blokir sementara. Jangan jadikan output sebagai satu-satunya bukti.</p></article>
-        <article><span>06</span><h2>Apa prioritas berikutnya?</h2><strong>Tambah IDN nyata.</strong><p>Kumpulkan lebih banyak Punycode phishing dan legitimate bertimestamp untuk memperbesar external test.</p></article>
-      </div>
-    </section>
+    <details class="reading-guide"><summary>Cara membaca hasil analisis</summary><p>Ambang keputusan model adalah 48%, berdasarkan pemilihan pada data validasi. Skor model di bawah ambang cenderung legitimate; skor yang mencapai atau melebihi ambang terindikasi phishing.</p><p>Skor sistem dapat disesuaikan oleh aturan penyamaran karakter dan daftar domain resmi. Hasil merupakan indikasi awal, bukan jaminan keamanan suatu situs.</p></details>
   </main>
-  <script src="app.js"></script>
+  <footer><strong>PunySos</strong><span>Lebih teliti pada tautan, lebih bijak menjaga informasi.</span></footer>
 </body>
 </html>
